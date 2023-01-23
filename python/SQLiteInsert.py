@@ -4,7 +4,7 @@ import pandas as pd
 
 
 class insert:
-    path = r"C:\Users\corbi\OneDrive\repos\todue\ToDue\python\test_py_bot.xlsx"
+    path = r"test_py_bot.xlsx"
     df = pd.read_excel(path)
 
     def generateTableAndInsertStatement(df, tableName):
@@ -103,7 +103,7 @@ class insert:
 
         if conn is not None:
             # CHANGE TABLE NAME HERE
-            generateTableAndInsertStatement(df, "Test")
+            generateTableAndInsertStatement(df, "Test") # ERROR - generateTableAndInsertStatement not defined!
         else:
             print("Error! cannot create the database connection.")
 
