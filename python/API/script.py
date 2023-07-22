@@ -86,14 +86,14 @@ def get_due_dates(syllabus_data):
     Uses Openai api to get due dates, times, class, and assignments from text extracted from
     extract_DOCX or extract_PDF.
 
-    Args:
+    Args:  
         syllabus_data (string): extracted text.
 
     Returns:
         _type_: returns a all course exam details in a dictionary format.
         
     """
-    openai.api_key = 'API KEY'
+    openai.api_key = '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'
     prompt = '''
             "Please provide the course exams in the following format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format. Press Enter without providing any input to finish entering the details."
             '''

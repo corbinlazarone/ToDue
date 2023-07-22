@@ -1,68 +1,36 @@
-"use client";
-
 import { Card, Switch, Input, Form, Button, Pagination } from "antd";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import styles from '../css/FileDisplay.module.css'
 const { Meta } = Card;
 
-export default function FileDisplay() {
+export default function FileDisplay(props) {
   const [loading, setLoading] = useState(false);
-  const [counter, setCounter] = useState(null);
+  const [counter, setCounter] = useState(0);
+  const [form] = Form.useForm(); // Get the form instance
 
-  const [className, setClassName] = useState(null);
-  const [assignment, setAssignment] = useState(null);
-  const [dueDate, setDueDate] = useState(null);
-  const [startTime, setStartTime] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  console.log(`Here's props: ${props.data.course_name}`);
 
   const onChange = (checked) => {
     setLoading(!checked);
   };
 
-  const initalData = {
-    1: {
-      className: "Math",
-      assignment: "Homework 1",
-      dueDate: "2023-07-31",
-      startTime: "10:00",
-      endTime: "11:30",
-    },
-    2: {
-      className: "Science",
-      assignment: "Lab Report",
-      dueDate: "2023-08-05",
-      startTime: "14:00",
-      endTime: "16:30",
-    },
-    3: {
-      className: "English",
-      assignment: "Essay",
-      dueDate: "2023-08-10",
-      startTime: "09:00",
-      endTime: "12:00",
-    },
-    4: {
-      className: "History",
-      assignment: "Presentation",
-      dueDate: "2023-08-15",
-      startTime: "13:30",
-      endTime: "15:00",
-    },
-    5: {
-      className: "Physics",
-      assignment: "Experiments",
-      dueDate: "2023-08-20",
-      startTime: "11:00",
-      endTime: "12:30",
-    },
+  const onSubmit = (event) => {
+    console.log("form data", event);
   };
-  
-  /*
-    for each event passed increase the pagination and changed the intialValues
-  */
+
+  useEffect(() => {
+    form.setFieldsValue({
+      className: props.data?.course_name,
+      assignment: props.data?.assignments?.[counter]?.name,
+      dueDate: props.data?.assignments?.[counter]?.due_date,
+      startTime: props.data?.assignments?.[counter]?.start_time,
+      endTime: props.data?.assignments?.[counter]?.end_time,
+    });
+  }, [counter, form, props.data]);
 
   const handlePaginationChange = (page) => {
-    setCounter(page)
-  }
+    setCounter(page - 1);
+  };
 
   const cardStyle = {
     width: 500,
@@ -73,14 +41,10 @@ export default function FileDisplay() {
   };
 
   return (
-    <div>
+    <div className={styles.fileDisplay}>
       <Switch checked={!loading} onChange={onChange} />
       <Card style={cardStyle} loading={loading} title="Syllabus Data">
-        <Form
-          layout="vertical"
-          initialValues={initalData[counter]}
-          // onFinish={handleSubmit}
-        >
+        <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Form.Item label="Class Name" name="className">
             <Input />
           </Form.Item>
@@ -88,20 +52,28 @@ export default function FileDisplay() {
             <Input />
           </Form.Item>
           <Form.Item label="Due Date" name="dueDate">
-            <Input type="date" />
+            {/* <Input type="date" /> */}
+            <Input />
           </Form.Item>
           <Form.Item label="Start Time" name="startTime">
-            <Input type="time" />
+            {/* <Input type="time" /> */}
+            <Input />
           </Form.Item>
           <Form.Item label="End Time" name="endTime">
-            <Input type="time" />
+            {/* <Input type="time" /> */}
+            <Input />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Save
             </Button>
           </Form.Item>
-          <Pagination current={counter} pageSize={1} total={5} onChange={handlePaginationChange}/>
+          <Pagination
+            current={counter + 1}
+            pageSize={1}
+            total={props.data?.assignments?.length}
+            onChange={handlePaginationChange}
+          />
         </Form>
       </Card>
     </div>
