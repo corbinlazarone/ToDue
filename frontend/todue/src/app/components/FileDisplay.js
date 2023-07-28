@@ -1,18 +1,11 @@
 import { Card, Switch, Input, Form, Button, Pagination } from "antd";
 import React, { useState, useEffect } from "react";
-import styles from '../css/FileDisplay.module.css'
+import styles from '../css/fileDisplay.module.css'
 const { Meta } = Card;
 
 export default function FileDisplay(props) {
-  const [loading, setLoading] = useState(false);
   const [counter, setCounter] = useState(0);
   const [form] = Form.useForm(); // Get the form instance
-
-  console.log(`Here's props: ${props.data.course_name}`);
-
-  const onChange = (checked) => {
-    setLoading(!checked);
-  };
 
   const onSubmit = (event) => {
     console.log("form data", event);
@@ -35,15 +28,13 @@ export default function FileDisplay(props) {
   const cardStyle = {
     width: 500,
     margin: "20px auto",
-    color: "black",
     borderRadius: 8,
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
   };
 
   return (
     <div className={styles.fileDisplay}>
-      <Switch checked={!loading} onChange={onChange} />
-      <Card style={cardStyle} loading={loading} title="Syllabus Data">
+      <Card style={cardStyle} title="Syllabus Data">
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Form.Item label="Class Name" name="className">
             <Input />
@@ -69,6 +60,7 @@ export default function FileDisplay(props) {
             </Button>
           </Form.Item>
           <Pagination
+            className={styles.pagination}
             current={counter + 1}
             pageSize={1}
             total={props.data?.assignments?.length}

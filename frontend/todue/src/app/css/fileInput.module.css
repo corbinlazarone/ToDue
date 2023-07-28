@@ -1,3 +1,25 @@
 .fileInput {
     transform: translateY(20px);
 }
+
+.card {
+    transform: translateY(20px);
+    animation: fade 1s ease;
+    /* width: 500px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+}
+
+.skeleton {
+    height: 500px;
+}
+
+@keyframes fade {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}

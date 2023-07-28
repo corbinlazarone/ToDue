@@ -81,42 +81,6 @@ def extract_DOCX(path):
     text = docx2txt.process(path)
     return text
 
-def get_due_dates(syllabus_data):
-    """
-    Uses Openai api to get due dates, times, class, and assignments from text extracted from
-    extract_DOCX or extract_PDF.
-
-    Args:  
-        syllabus_data (string): extracted text.
-
-    Returns:
-        _type_: returns a all course exam details in a dictionary format.
-        
-    """
-    openai.api_key = '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'
-    prompt = '''
-            "Please provide the course exams in the following format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format. Press Enter without providing any input to finish entering the details."
-            '''
-    full_prompt = prompt + "From the data " + syllabus_data + "Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION."
-    
-    response = openai.Completion.create(
-        model='text-davinci-003',
-         prompt = full_prompt,
-         max_tokens = 1200,
-         n=1,
-         stop=None,
-         temperature = 0,
-    )
-    
-    rep = response.choices[0].text.strip()
-    
-    start_pos = rep.index('{') # get response where { starts.
-
-    # Extract the dictionary part
-    dictionary_str = rep[start_pos:]
-    
-    return json.loads(dictionary_str)
-
 def create_calendar_events(syllabus_data):
     """
     puts dictionary from get_due_dates into correact event json format to write to google calendar.
@@ -128,9 +92,9 @@ def create_calendar_events(syllabus_data):
         _type_: the resulting events created.
     """
     service = get_calendar_service()
-    # events = get_due_dates(syllabus_data)
+    course_data = get_due_dates(syllabus_data)
     
-    course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
+    # course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
     
     events = []
     
@@ -146,7 +110,7 @@ def create_calendar_events(syllabus_data):
                 'description': assignment['name'],
                 'start': {
                     'dateTime': startDateTime,
-                    'timeZone': 'America/New_York', # Eastern Standard Time
+                    'timeZone': 'America/New_York',
                 },
                 'end': {
                     'dateTime': endDateTiem,
@@ -162,8 +126,6 @@ def create_calendar_events(syllabus_data):
                 
             events.append(event)
     return events
-
-course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Varies', 'start_time': 'N/A', 'end_time': 'N/A'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
 
 def convert_dates_and_times(due_date, time, year):
     """
@@ -192,5 +154,53 @@ def convert_dates_and_times(due_date, time, year):
         date_time = date_time.replace(year=year)
         
         return date_time.strftime("%Y-%m-%dT%H:%M:%S")
+
+def correct_keys(data):
+    course = {'course_name': None, 'assignments': None}
+    test = []
+    for keys in data:
+        test.append(keys)
+        
+    course['course_name'] = data[test[0]]
+    course['assignments'] = data[test[1]] 
     
-print(create_calendar_events(extract_DOCX("Syllabus_Homan (4).docx")))
+    return course
+
+def get_due_dates(syllabus_data):
+    """
+    Uses Openai api to get due dates, times, class, and assignments from text extracted from
+    extract_DOCX or extract_PDF.
+
+    Args:  
+        syllabus_data (string): extracted text.
+
+    Returns:
+        _type_: returns a all course exam details in a dictionary format.
+        
+    """
+    openai.api_key = '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'
+    prompt = '''
+            "Please provide the course exams in the following format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format. Press Enter without providing any input to finish entering the details or changing the dictionary keys."
+            '''
+    full_prompt = prompt + "From the data " + syllabus_data + "Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION."
+    
+    response = openai.Completion.create(
+        model='text-davinci-003',
+         prompt = full_prompt,
+         max_tokens = 1200,
+         n=1,
+         stop=None,
+         temperature = 0,
+    )
+    
+    rep = response.choices[0].text.strip()
+    
+    start_pos = rep.index('{') # get response where { starts.
+    course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
+    dictionary_str = rep[start_pos:]
+    data = json.loads(dictionary_str)
+    
+    if set(data.keys()) == set(course_data.keys()):
+        return data
+    else:
+        return correct_keys(data)
