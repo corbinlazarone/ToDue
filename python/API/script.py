@@ -6,45 +6,6 @@ import openai
 import pickle
 import os.path
 import datetime
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-
-SCOPES = ['https://www.googleapis.com/auth/calendar']
-CREDENTIALS_FILE = 'credentials.json'
-
-def get_calendar_service():
-    """
-    Authorizes User and asks them to allow access to their google calendar.
-    
-    Returns:
-        type: returns the service used to write to the google calendar.
-    
-    """
-    creds = None
-    # The file token.pickle stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If there are no (valid) credentials available, let the user log in.
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                CREDENTIALS_FILE, SCOPES)
-            creds = flow.run_local_server(port=0)
-
-        # Save the credentials for the next run
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-
-    service = build('calendar', 'v3', credentials=creds)
-    return service
 
 def extract_PDF(path):
     """
@@ -91,7 +52,7 @@ def create_calendar_events(syllabus_data):
     Returns:
         _type_: the resulting events created.
     """
-    service = get_calendar_service()
+    # service = get_calendar_service()
     course_data = get_due_dates(syllabus_data)
     
     # course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
@@ -99,10 +60,10 @@ def create_calendar_events(syllabus_data):
     events = []
     
     for assignment in course_data["assignments"]:
-        startDateTime = convert_dates_and_times(assignment["due_date"], assignment["start_time"], 2023)
-        endDateTiem = convert_dates_and_times(assignment["due_date"], assignment["end_time"], 2023) 
+        startDateTime = convert_dates_and_times(assignment["due_date"], assignment["start_time"], 2022)
+        endDateTime = convert_dates_and_times(assignment["due_date"], assignment["end_time"], 2022) 
 
-        if startDateTime == "wrong format" or endDateTiem == "wrong format":
+        if startDateTime == "wrong format" or endDateTime == "wrong format":
             return "wrong format dates"
         else:
             event = {
@@ -113,7 +74,7 @@ def create_calendar_events(syllabus_data):
                     'timeZone': 'America/New_York',
                 },
                 'end': {
-                    'dateTime': endDateTiem,
+                    'dateTime': endDateTime,
                     'timeZone': 'America/New_York',
                 },
                 'reminders': {

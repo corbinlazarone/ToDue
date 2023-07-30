@@ -1,5 +1,6 @@
 .fileInput {
     transform: translateY(20px);
+    animation: fade 1s ease;
 }
 
 .card {
@@ -9,10 +10,6 @@
     margin: 20px auto;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-}
-
-.skeleton {
-    height: 500px;
 }
 
 @keyframes fade {

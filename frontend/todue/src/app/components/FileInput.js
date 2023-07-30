@@ -1,27 +1,27 @@
 "use client";
-import { Button, message, Upload, Spin, Progress, Card, Skeleton } from "antd";
+import { Button, message, Upload, Card, Skeleton } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import FileDisplay from "./FileDisplay";
 import axios from "axios";
 import styles from "../css/fileInput.module.css";
-import { useEffect } from "react";
 
-export default function FileInput() {
+export default function FileInput(props) {
   const [data, setData] = useState(null);
   const [fileUploaded, setFileUploaded] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const onChange = (info) => {
+    setFileUploaded(true)
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
-      setFileUploaded(true);
     } else if (info.file.status === "error") {
       message.error(`${info.file.name} file upload failed.`);
     }
   };
 
   const beforeUpload = (file) => {
+    setLoading(true)
     const allowedTypes = [
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -37,7 +37,6 @@ export default function FileInput() {
 
   const handleSubmit = async ({ file, onSuccess, onError }) => {
     try {
-      setLoading(true);
       const formData = new FormData();
       formData.append("file", file);
 
@@ -62,59 +61,37 @@ export default function FileInput() {
     }
   };
 
-  // const handleReuploadLoad = () => {
-  //   const cardStyle = {
-  //     width: 500,
-  //     margin: "20px auto",
-  //     borderRadius: "8px",
-  //     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-  //   };
-
-  //   useEffect(() => {
-  //     if (fileUploaded == true) {
-  //       return (
-  //         <Card style={cardStyle}>
-  //           <Skeleton loading={loading} active style={{ height: 500 }} />
-  //         </Card>
-  //       );
-  //     }
-  //   }, []);
-
-  //   if (fileUploaded == true) {
-  //     if (loading == true) {
-  //       return (
-  //         <Card style={cardStyle}>
-  //           <Skeleton loading={loading} active style={{ height: 500 }} />
-  //         </Card>
-  //       );
-  //     } else if (loading == false) {
-  //       return <FileDisplay data={data} />;
-  //     }
-  //   }
-  // };
-
   return (
     <>
       <div className={styles.fileInput}>
-        <Upload
-          name="file"
-          showUploadList={false}
-          customRequest={handleSubmit}
-          onChange={onChange}
-          beforeUpload={beforeUpload}
-        >
-          <Button icon={<UploadOutlined />}>Upload File</Button>
-        </Upload>
+        {props.disabled && (
+          <Upload
+            name="file"
+            showUploadList={false}
+            customRequest={handleSubmit}
+            onChange={onChange}
+            beforeUpload={beforeUpload}
+          >
+            <Button icon={<UploadOutlined />}>Upload File</Button>
+          </Upload>
+        )}
       </div>
-      <div className={styles.card}>
-        {fileUploaded && loading ? (
-          <Card style={{ width: 500, margin: "20px auto", borderRadius: "8px", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)" }}>
-            <Skeleton loading={loading} active style={{ height: 500 }} />
+      {fileUploaded && loading ? (
+        <div className={styles.card}>
+          <Card
+            style={{
+              width: 500,
+              margin: "20px auto",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            }}
+          >
+            <Skeleton loading={loading} active />
           </Card>
-        ) : fileUploaded && !loading ? (
-          <FileDisplay data={data} />
-        ) : null}
-      </div>
+        </div>
+      ) : fileUploaded && !loading ? (
+        <FileDisplay data={data} />
+      ) : null}
     </>
   );
 }
