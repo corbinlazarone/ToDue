@@ -1,10 +1,8 @@
-import os
 import json
 import PyPDF2
 import docx2txt
 import openai
-import pickle
-import os.path
+import requests
 import datetime
 
 def extract_PDF(path):
@@ -42,7 +40,7 @@ def extract_DOCX(path):
     text = docx2txt.process(path)
     return text
 
-def create_calendar_events(syllabus_data):
+def create_calendar_events(syllabus_data, token):
     """
     puts dictionary from get_due_dates into correact event json format to write to google calendar.
 
@@ -54,10 +52,6 @@ def create_calendar_events(syllabus_data):
     """
     # service = get_calendar_service()
     course_data = get_due_dates(syllabus_data)
-    
-    # course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
-    
-    events = []
     
     for assignment in course_data["assignments"]:
         startDateTime = convert_dates_and_times(assignment["due_date"], assignment["start_time"], 2022)
@@ -81,12 +75,18 @@ def create_calendar_events(syllabus_data):
                     'useDefault': True,
                 },
             }
+            
+            headers={
+                "Authorization": f"Bearer {token}",
+                "Content-Type": "application/json"
+            }
     
-            # Creates a new event from the dates supplied by the get_due_date function.
-            # event_result = service.events().insert(calendarId='primary', body=event).execute()
+            create_event_url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
+            
+            response = requests.post(create_event_url, json=event, headers=headers)
                 
-            events.append(event)
-    return events
+    return course_data
+ 
 
 def convert_dates_and_times(due_date, time, year):
     """
@@ -139,7 +139,12 @@ def get_due_dates(syllabus_data):
         _type_: returns a all course exam details in a dictionary format.
         
     """
-    openai.api_key = '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'
+    
+    with open("config.json") as config_file:
+        config = json.load(config_file)
+        OPENAI_API_KEY = config["OPENAI_API_KEY"]
+    
+    openai.api_key = OPENAI_API_KEY
     prompt = '''
             "Please provide the course exams in the following format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format. Press Enter without providing any input to finish entering the details or changing the dictionary keys."
             '''
