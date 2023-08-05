@@ -39,6 +39,26 @@ def grab_tokens(code):
     
     return access_token
 
+def get_user_info(token):
+    headers = {
+        'Authorization': f'Bearer {token}',
+        'Accept': 'application/json',
+    }
+
+    params = {
+        'personFields': 'names,emailAddresses,photos',  # You can include additional fields as needed
+    }
+
+    url = 'https://people.googleapis.com/v1/people/me'
+    response = requests.get(url, headers=headers, params=params)
+
+    if response.status_code == 200:
+        profile_data = response.json()
+        return profile_data
+    else:
+        print(f"Failed to fetch profile: {response.status_code} - {response.text}")
+        return None
+
 token = None
 # GET: get tokens from google oauth.
 @app.route('/code', methods=["POST"])
@@ -50,7 +70,15 @@ def handleCode():
     global token
     token = grab_tokens(code)
     
-    return jsonify({'message': 'Tokens received'}, 200)
+    profile = get_user_info(token)
+    
+    return profile
+
+# GET: check sign in.
+@app.route('/checkSignIn', methods=["GET"])
+def checkSignIn():
+    if token is not None:
+        return jsonify({'sign': 'User signed in'})
 
 # POST: upload file to get course data to populate form.
 @app.route('/uploadFile', methods=["POST"])
@@ -70,7 +98,7 @@ def handleFileUpload():
     else:
         return jsonify({'error': 'Invalid File Extension'}, 400)
 
-# POST: updated form values up load to google calendar.
+# POST: updated form values up load to google ca::lendar.
 @app.route('/createEvents', methods=["POST"])
 def create_event():
     

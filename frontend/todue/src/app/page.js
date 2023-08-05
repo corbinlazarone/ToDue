@@ -5,12 +5,8 @@ import Profile from "./components/SignAndFile/Profile";
 export default function page() {
   return (
     <>
-    <header>
-      <Profile />
-    </header>
       <main className={styles.main}>
-        <h1>To Due</h1>
-        <Oauth />
+          <Oauth />
       </main>
     </>
   );
