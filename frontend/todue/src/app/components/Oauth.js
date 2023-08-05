@@ -47,7 +47,7 @@ export default function Oauth() {
     console.log(error);
     messageAPI.open({
       type: "error",
-      content: "Error Occuried :( Try Again!",
+      content: "Error Occured :( Try Again!",
     });
   };
 

@@ -1,7 +1,7 @@
 'use client'
 import { useCallback } from 'react'
 import './css/globals.css'
-import config from '../../../../python/API/config.json'
+import config from './config.json'
 import { Inter } from 'next/font/google'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 
