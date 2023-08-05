@@ -3,6 +3,11 @@
     animation: fade 1s ease;
 }
 
+.titleComp {
+    display: flex;
+    justify-content: space-between;
+}
+
 .card {
     transform: translateY(20px);
     animation: fade 1s ease;

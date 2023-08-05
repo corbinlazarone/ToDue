@@ -40,7 +40,7 @@ def extract_DOCX(path):
     text = docx2txt.process(path)
     return text
 
-def create_calendar_events(syllabus_data, token):
+def create_calendar_events(course_data, token, year):
     """
     puts dictionary from get_due_dates into correact event json format to write to google calendar.
 
@@ -50,12 +50,9 @@ def create_calendar_events(syllabus_data, token):
     Returns:
         _type_: the resulting events created.
     """
-    # service = get_calendar_service()
-    course_data = get_due_dates(syllabus_data)
-    
     for assignment in course_data["assignments"]:
-        startDateTime = convert_dates_and_times(assignment["due_date"], assignment["start_time"], 2022)
-        endDateTime = convert_dates_and_times(assignment["due_date"], assignment["end_time"], 2022) 
+        startDateTime = convert_dates_and_times(assignment["due_date"], assignment["start_time"], year)
+        endDateTime = convert_dates_and_times(assignment["due_date"], assignment["end_time"], year) 
 
         if startDateTime == "wrong format" or endDateTime == "wrong format":
             return "wrong format dates"
@@ -83,14 +80,14 @@ def create_calendar_events(syllabus_data, token):
     
             create_event_url = "https://www.googleapis.com/calendar/v3/calendars/primary/events"
             
-            response = requests.post(create_event_url, json=event, headers=headers)
+            requests.post(create_event_url, json=event, headers=headers)
                 
     return course_data
  
 
 def convert_dates_and_times(due_date, time, year):
     """
-    Converts dates and times extracted from Syllabus to specfic google calener date and time format.
+    Converts dates and times extracted from Syllabus to specfic google calendar date and time format.
 
     Args:
         due_date (string): due date needed for event.
@@ -145,14 +142,9 @@ def get_due_dates(syllabus_data):
         OPENAI_API_KEY = config["OPENAI_API_KEY"]
     
     openai.api_key = OPENAI_API_KEY
-    prompt = '''
-            "Please provide the course exams in the following format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format. Press Enter without providing any input to finish entering the details or changing the dictionary keys."
-            '''
-    full_prompt = prompt + "From the data " + syllabus_data + "Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION."
-    
     response = openai.Completion.create(
         model='text-davinci-003',
-         prompt = full_prompt,
+         prompt = '"Please provide course exams in this format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format." From the data ' + syllabus_data + ". Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION.",
          max_tokens = 1200,
          n=1,
          stop=None,
@@ -166,7 +158,9 @@ def get_due_dates(syllabus_data):
     dictionary_str = rep[start_pos:]
     data = json.loads(dictionary_str)
     
+    
     if set(data.keys()) == set(course_data.keys()):
         return data
     else:
         return correct_keys(data)
+    

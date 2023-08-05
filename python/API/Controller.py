@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import requests
 import json
-from script import get_due_dates, extract_DOCX, extract_PDF
+from script import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
 
 app = Flask("ToDue")
 CORS(app)
@@ -52,24 +52,40 @@ def handleCode():
     
     return jsonify({'message': 'Tokens received'}, 200)
 
-# POST: upload file to get course data.
+# POST: upload file to get course data to populate form.
 @app.route('/uploadFile', methods=["POST"])
 def handleFileUpload():
     if 'file' not in request.files:
         return jsonify({'error': 'No file selected'}, 400)
     
     file = request.files['file']
-    
+    course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
     if file and allowed_files(file.filename):
-        course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
         if file.filename.rsplit('.', 1)[1].lower() == 'pdf':
-            pdfCourseData = get_due_dates(extract_PDF(file))
-            return jsonify(pdfCourseData)
+            # pdfCourseData = get_due_dates(extract_PDF(file))
+            return jsonify(course_data)
         elif file.filename.rsplit('.', 1)[1].lower() == 'docx':
-            docxCourseData = get_due_dates(extract_DOCX(file))
-            return jsonify(docxCourseData)
+            # docxCourseData = get_due_dates(extract_DOCX(file))
+            return jsonify(course_data)
     else:
         return jsonify({'error': 'Invalid File Extension'}, 400)
+
+# POST: updated form values up load to google calendar.
+@app.route('/createEvents', methods=["POST"])
+def create_event():
+    
+    if 'course_data' not in request.json:
+        return jsonify({'error': 'no course data found'}, 400)
+
+    course_data = request.json["course_data"]
+    year = request.json["year"]
+    
+    result = create_calendar_events(course_data, token, year)
+    
+    if result is not None:
+        return jsonify({'Success': "Calendar updated"}, 200)
+    else:
+        return jsonify({'error': 'Error!'}, 400)    
     
 if __name__ == '__main__':
     app.run(debug=True)

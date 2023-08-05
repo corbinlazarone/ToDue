@@ -1,0 +1,63 @@
+/*!****************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[3]!./src/app/css/fileDisplay.module.css ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************/
+.fileDisplay_fileDisplay__czBYn {
+    transform: translateY(20px);
+    animation: fileDisplay_fade__OHkW3 1s ease;
+}
+
+@keyframes fileDisplay_fade__OHkW3 {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.fileDisplay_pagination__fmbu8 {
+    display: flex;
+    justify-content: center;
+}
+/*!**************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[3]!./src/app/css/fileInput.module.css ***!
+  \**************************************************************************************************************************************************************************************************************************************************************************/
+.fileInput_fileInput__zxb_k {
+    transform: translateY(20px);
+    animation: fileInput_fade__0j4wC 1s ease;
+}
+
+.fileInput_titleComp__0wle1 {
+    display: flex;
+    justify-content: space-between;
+}
+
+.fileInput_card__x2MNp {
+    transform: translateY(20px);
+    animation: fileInput_fade__0j4wC 1s ease;
+    /* width: 500px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
+}
+
+@keyframes fileInput_fade__0j4wC {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+/*!*********************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[5].oneOf[7].use[3]!./src/app/css/page.module.css ***!
+  \*********************************************************************************************************************************************************************************************************************************************************************/
+.page_main__1ANe_ {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  padding: 6rem;
+  min-height: 100vh;
+}
