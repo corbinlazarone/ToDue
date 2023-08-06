@@ -1,9 +1,9 @@
 "use client";
 import { useGoogleLogin } from "@react-oauth/google";
+import { GoogleLoginButton } from "react-social-login-buttons";
 import styles from "../../css/fileInput.module.css";
 import FileInput from "./FileInput";
 import axios from "axios";
-import GoogleButton from "react-google-button";
 import { useState } from "react";
 import { message } from "antd";
 import Profile from "./Profile";
@@ -72,7 +72,7 @@ export default function Oauth() {
       <div>
         {contextHolder}
         <div className={styles.fileInput}>
-          {signedIn && <GoogleButton onClick={() => login()} />}
+          {signedIn && <GoogleLoginButton  onClick={() => login()} />}
         </div>
       </div>
       <FileInput disabled={disabled} />
