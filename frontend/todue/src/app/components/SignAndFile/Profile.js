@@ -1,18 +1,16 @@
 "use client";
-
 import { Avatar, Menu, Dropdown, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import styles from "../../css/profile.module.css";
 
 export default function Profile(props) {
+
   const handleMenuClick = (e) => {
-    // Handle the click event based on the key or item you want to perform an action for
     console.log("Clicked item:", e.key);
   };
 
   const menu = (
     <Menu onClick={handleMenuClick}>
-      {/* Add dropdown menu items */}
       <Menu.Item key="editProfile">Edit Profile</Menu.Item>
       <Menu.Item key="settings">Settings</Menu.Item>
       <Menu.Item key="logout">Logout</Menu.Item>

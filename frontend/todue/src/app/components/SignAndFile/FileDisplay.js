@@ -18,10 +18,12 @@ export default function FileDisplay(props) {
   const [beingEdited, setBeingEdited] = useState(false);
   const [year, setYear] = useState("");
   const [yearSelected, setYearSelected] = useState(false);
-  const [form] = Form.useForm(); // Get the form instance
+  const [form] = Form.useForm();
   const [messageAPI, contextHolder] = message.useMessage();
+  const [checkStatus, setCheckStatus] = useState(false);
 
   useEffect(() => {
+    // set the form values based on props.data.
     form.setFieldsValue({
       dueDate: props.data?.assignments?.[counter]?.due_date,
       endTime: props.data?.assignments?.[counter]?.end_time,
@@ -71,21 +73,45 @@ export default function FileDisplay(props) {
       content: `Page ${counter + 1} values saved!`,
     });
 
-    // Send new props.data
-    // try {
-    //   const response = await axios.post("http://127.0.0.1:5000/code", {course_data: props.data, year: year}, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //   })
+    console.log("submitted", props.data);
+  };
 
-    //   const repStatus = await response.data
-    //   console.log(repStatus)
-    // } catch (error) {
-    //   console.error(`ERROR: ${error}`)
-    // }
+  const uploadToCalendar = async () => {
 
-    console.log("submitted", updatedData);
+    setBeingEdited(false)
+    setCheckStatus(true)
+
+    messageAPI.open({
+      type: "loading",
+      content: "Adding Events to Corbins Google Calendar",
+      key: "loadingKey",
+    });
+
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:5000/createEvents",
+        { course_data: props.data, year: year },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      messageAPI.open({
+        type: "success",
+        content: "Events Created!",
+        key: "loadingKey",
+      });
+
+    } catch (error) {
+      console.error(`Error: ${error}`);
+      messageAPI.open({
+        type: "error",
+        content: "Error Adding Events",
+        key: "loadingKey",
+      });
+    }
   };
 
   const cardStyle = {
@@ -110,22 +136,37 @@ export default function FileDisplay(props) {
     );
   };
 
+  /**
+   * TO DO: 
+   *  - run format checkers on dates and times.
+   *  - make upload file disabled when on create event request.
+   */
+
   return (
     <div className={styles.fileDisplay}>
       {contextHolder}
       <Card style={cardStyle} title={titleComp()}>
         <Form form={form} layout="vertical" onFinish={onSubmit}>
           <Form.Item label="Assignment" name="name">
-            <Input onChange={isEditing} />
+            <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
-          <Form.Item label="Due Date" name="dueDate">
-            <Input onChange={isEditing} />
+          <Form.Item
+            label="Due Date (Must be in example format: Tuesday, February 6th)"
+            name="dueDate"
+          >
+            <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
-          <Form.Item label="Start Time" name="startTime">
-            <Input onChange={isEditing} />
+          <Form.Item
+            label="Start Time (Must be in example format: 8:30 am)"
+            name="startTime"
+          >
+            <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
-          <Form.Item label="End Time" name="endTime">
-            <Input onChange={isEditing} />
+          <Form.Item
+            label="End Time (Must be in example format: 8:30 am)"
+            name="endTime"
+          >
+            <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
           <Form.Item>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -135,7 +176,9 @@ export default function FileDisplay(props) {
                 </Button>
               )}
               {yearSelected && (
-                <Button type="primary">Create Event in Google Calendar</Button>
+                <Button type="primary" onClick={uploadToCalendar}>
+                  Create Event in Google Calendar
+                </Button>
               )}
             </div>
           </Form.Item>

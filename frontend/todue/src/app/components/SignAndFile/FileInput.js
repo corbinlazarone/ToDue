@@ -11,9 +11,8 @@ export default function FileInput(props) {
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [buttonDisabled, setDisabled] = useState(false)
-  const [error, setError] = useState(false)
-  
 
+  // user feed back.
   const onChange = (info) => {
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
@@ -23,6 +22,7 @@ export default function FileInput(props) {
     }
   };
 
+  // check allowed file extension before uploading file.
   const beforeUpload = (file) => {
     setLoading(true)
     const allowedTypes = [
@@ -38,6 +38,7 @@ export default function FileInput(props) {
     return isAllowed;
   };
 
+  // send uploaded file.
   const handleSubmit = async ({ file, onSuccess, onError }) => {
     try {
       setDisabled(true)
@@ -63,11 +64,11 @@ export default function FileInput(props) {
       console.error(`Error uploading file: ${error}`);
       setLoading(false);
       setDisabled(false)
-      setError(true)
       onError();
     }
   };
 
+  // updates props.data with user data saved, if edited.
   const updateData = (newData) => {
     setData(newData)
   }

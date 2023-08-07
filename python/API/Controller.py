@@ -1,12 +1,15 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import os
 import requests
+from dotenv import load_dotenv
 import json
 from script import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
 
 app = Flask("ToDue")
 CORS(app)
 
+load_dotenv()
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
 def allowed_files(file_name):
@@ -39,6 +42,7 @@ def grab_tokens(code):
     
     return access_token
 
+# grab user infor from google people api.
 def get_user_info(token):
     headers = {
         'Authorization': f'Bearer {token}',
@@ -46,7 +50,7 @@ def get_user_info(token):
     }
 
     params = {
-        'personFields': 'names,emailAddresses,photos',  # You can include additional fields as needed
+        'personFields': 'names,emailAddresses,photos',
     }
 
     url = 'https://people.googleapis.com/v1/people/me'
@@ -73,12 +77,6 @@ def handleCode():
     profile = get_user_info(token)
     
     return profile
-
-# GET: check sign in.
-@app.route('/checkSignIn', methods=["GET"])
-def checkSignIn():
-    if token is not None:
-        return jsonify({'sign': 'User signed in'})
 
 # POST: upload file to get course data to populate form.
 @app.route('/uploadFile', methods=["POST"])
@@ -108,7 +106,8 @@ def create_event():
     course_data = request.json["course_data"]
     year = request.json["year"]
     
-    result = create_calendar_events(course_data, token, year)
+    # result = create_calendar_events(course_data, token, year)
+    result = {'success': 'yes'}
     
     if result is not None:
         return jsonify({'Success': "Calendar updated"}, 200)
