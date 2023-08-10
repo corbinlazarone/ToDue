@@ -13,6 +13,11 @@ import axios from "axios";
 import { message } from "antd";
 const { Meta } = Card;
 
+// FileDisplay Component
+// Displays the form for editing values and submitting values.
+// Props:
+// - data: The Data obtained from the algorithm to fill form with syllabus due dates, times, etc.
+// - updateData: function to update original data sent from FileInput Component.
 export default function FileDisplay(props) {
   const [counter, setCounter] = useState(0);
   const [beingEdited, setBeingEdited] = useState(false);
@@ -32,17 +37,53 @@ export default function FileDisplay(props) {
     });
   }, [counter, form, props.data]);
 
+  /**
+   * Making sure the pagination matches with the correct data by subtracting one from the current page.
+   * @param {number} page The current page on the pagination.
+   */
   const handlePaginationChange = (page) => {
     setCounter(page - 1);
   };
 
+  /**
+   * Makes the "Save" button appear if the user editing the form values.
+   */
   const isEditing = () => {
     setBeingEdited(true);
   };
 
+  /**
+   * Handles submitting the form values, checking format and updating props.data correctly with new values
+   * @returns {object} updated props.data with user's inputted form values.
+   */
   const onSubmit = async () => {
-    // Get the form values
     const formData = await form.validateFields();
+
+    // Check format of date and time.
+    const dateFormatRegex =
+      /^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}(st|nd|rd|th)$/;
+    const timeFormatRegex = /^(1[0-2]|0?[1-9]):[0-5][0-9] [APap][Mm]$/;
+
+    if (!dateFormatRegex.test(formData.dueDate)) {
+      messageAPI.error(
+        'Invalid due date format. Please use "Tuesday, February 6th" format.'
+      );
+      return;
+    }
+
+    if (!timeFormatRegex.test(formData.startTime)) {
+      messageAPI.error(
+        'Invalid start time format. Please use "8:30 am" or "8:30 pm" format.'
+      );
+      return;
+    }
+
+    if (!timeFormatRegex.test(formData.endTime)) {
+      messageAPI.error(
+        'Invalid end time format. Please use "8:30 am" or "8:30 pm" format.'
+      );
+      return;
+    }
 
     // Update the corresponding assignment object in the props.data array
     const updatedAssignments = props.data.assignments.map(
@@ -65,21 +106,20 @@ export default function FileDisplay(props) {
       ...props.data,
       assignments: updatedAssignments,
     };
-
     props.updateData(updatedData);
 
     messageAPI.open({
       type: "success",
       content: `Page ${counter + 1} values saved!`,
     });
-
-    console.log("submitted", props.data);
   };
 
+  /**
+   * Handles Upload to api to Create Events from user's form values.
+   */
   const uploadToCalendar = async () => {
-
-    setBeingEdited(false)
-    setCheckStatus(true)
+    setBeingEdited(false);
+    setCheckStatus(true);
 
     messageAPI.open({
       type: "loading",
@@ -89,10 +129,11 @@ export default function FileDisplay(props) {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:5000/createEvents",
+        "http://127.0.0.1:5000/api/createEvents",
         { course_data: props.data, year: year },
         {
           headers: {
+            "Authorization": `Bearer ${props.accessToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -103,7 +144,6 @@ export default function FileDisplay(props) {
         content: "Events Created!",
         key: "loadingKey",
       });
-
     } catch (error) {
       console.error(`Error: ${error}`);
       messageAPI.open({
@@ -121,6 +161,10 @@ export default function FileDisplay(props) {
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
   };
 
+  /**
+   * holds jsx elements for the card title and data picker
+   * @returns {JSXElement} formatted title and date picker.
+   */
   const titleComp = () => {
     return (
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -135,12 +179,6 @@ export default function FileDisplay(props) {
       </div>
     );
   };
-
-  /**
-   * TO DO: 
-   *  - run format checkers on dates and times.
-   *  - make upload file disabled when on create event request.
-   */
 
   return (
     <div className={styles.fileDisplay}>

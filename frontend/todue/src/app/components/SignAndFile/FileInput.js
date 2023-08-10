@@ -6,13 +6,20 @@ import FileDisplay from "./FileDisplay";
 import axios from "axios";
 import styles from "../../css/fileInput.module.css";
 
+// FileInput Component.
+// takes a fileUpload.
+// Props
+// - disabled: to hide upload file action until user is signed in.
 export default function FileInput(props) {
   const [data, setData] = useState(null);
   const [fileUploaded, setFileUploaded] = useState(false);
   const [loading, setLoading] = useState(true);
   const [buttonDisabled, setDisabled] = useState(false)
 
-  // user feed back.
+  /**
+   * on changes function to display success or error when the user uploads a file.
+   * @param {string} info grabs file name to display feedback with file uploaded.
+   */
   const onChange = (info) => {
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
@@ -22,7 +29,11 @@ export default function FileInput(props) {
     }
   };
 
-  // check allowed file extension before uploading file.
+  /**
+   * Checks allowed file extension of PDF or DOCX.
+   * @param {file} file 
+   * @returns {*} string error or true.
+   */
   const beforeUpload = (file) => {
     setLoading(true)
     const allowedTypes = [
@@ -38,7 +49,12 @@ export default function FileInput(props) {
     return isAllowed;
   };
 
-  // send uploaded file.
+  /**
+   * handles file upload to backed for getting syllabus data.
+   * @param {file} file property of object being passed from antd Upload component.
+   * @param {function} onSuccess callback function from object passed from antd Upload Component if successful.
+   * @param {function} onError callback function from object passed from antd Upload Component if unsuccessful.
+   */
   const handleSubmit = async ({ file, onSuccess, onError }) => {
     try {
       setDisabled(true)
@@ -46,10 +62,11 @@ export default function FileInput(props) {
       formData.append("file", file);
 
       const response = await axios.post(
-        "http://127.0.0.1:5000/uploadFile",
+        "http://127.0.0.1:5000/api/uploadFile",
         formData,
         {
           headers: {
+            "Authorization": `Bearer ${props.accessToken}`,
             "Content-Type": "multipart/form-data",
           },
         }
@@ -68,7 +85,10 @@ export default function FileInput(props) {
     }
   };
 
-  // updates props.data with user data saved, if edited.
+  /**
+   * updates props.data with user data saved, if edited.
+   * @param {object} newData 
+   */
   const updateData = (newData) => {
     setData(newData)
   }
@@ -103,7 +123,7 @@ export default function FileInput(props) {
           </Card>
         </div>
       ) : fileUploaded && !loading ? (
-        <FileDisplay data={data} updateData={updateData}/>
+        <FileDisplay data={data} updateData={updateData} accessToken={props.accessToken}/>
       ): null}
     </>
   );
