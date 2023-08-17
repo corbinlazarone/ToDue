@@ -5,9 +5,6 @@ import openai
 import requests
 import datetime
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 
 def extract_PDF(path):
     """
@@ -141,7 +138,7 @@ def get_due_dates(syllabus_data):
         
     """
     
-    OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
+    OPENAI_API_KEY = "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"
     
     openai.api_key = OPENAI_API_KEY
     response = openai.Completion.create(

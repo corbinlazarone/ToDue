@@ -57,7 +57,6 @@ export default function FileInput(props) {
    */
   const handleSubmit = async ({ file, onSuccess, onError }) => {
     try {
-      setDisabled(true)
       const formData = new FormData();
       formData.append("file", file);
 
@@ -99,13 +98,12 @@ export default function FileInput(props) {
         {props.disabled && (
           <Upload
             name="file"
-            disabled={buttonDisabled}
             showUploadList={false}
             customRequest={handleSubmit}
             onChange={onChange}
             beforeUpload={beforeUpload}
           >
-            <Button disabled={buttonDisabled} icon={<UploadOutlined />}>Upload File</Button>
+            <Button  icon={<UploadOutlined />}>Upload File</Button>
           </Upload>
         )}
       </div>
