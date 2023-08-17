@@ -34,18 +34,27 @@ export default function Oauth() {
           },
         }
       );
-      const token = await response.data;
-      console.log(token)
-      setAccessToken(token);
-      grabProfileInfo(token)
-      messageAPI.open({
-        type: "success",
-        content: "Sign in Successful! 🚀",
-      });
 
-      setDisabled(true);
-      setSignedIn(false);
-      setProfileSignIn(true);
+      if (response.status == 200) {
+        const token = await response.data;
+        console.log(token);
+        setAccessToken(token);
+        grabProfileInfo();
+        messageAPI.open({
+          type: "success",
+          content: "Sign in Successful! 🚀",
+        });
+
+        setDisabled(true);
+        setSignedIn(false);
+        setProfileSignIn(true);
+      } else {
+        messageAPI.open({
+          type: "error",
+          content: "Error! Try Signing in again",
+        });
+      }
+      
     } catch (error) {
       console.error(`Error sending code to backend: ${error}`);
       setSignedIn(true);
@@ -57,21 +66,20 @@ export default function Oauth() {
    * grab user profile information from google people api.
    * @param {string} token Bearer token for authorization.
    */
-  const grabProfileInfo = async (token) => {
+  const grabProfileInfo = async () => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/profile", {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
-      const repData = await response.data
+      const repData = await response.data;
 
       // Grabbing profile info
       const photoArray = repData.photo;
-      console.log(repData)
+      console.log(repData);
       const photoUrl = photoArray.map((photo) => photo.url);
       setPhotoUrl(photoUrl);
-
     } catch (error) {
       console.error(error);
     }

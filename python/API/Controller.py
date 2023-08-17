@@ -1,19 +1,12 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_restx import Api, Resource, fields
-from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
-import os
+from script import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
+from middleware import require_authorization_header
 import requests
 import json
-from script import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
-
-# with open("config.json") as config_file:
-#     config = json.load(config_file)
-#     JWT_SECRET_KEY = config["JWT_SECRET_KEY"]
 
 app = Flask("ToDue")
 CORS(app)
-api = Api(app, version='1.0', title='To Due', description='An Api to handle syllabus extraction.')
 
 ALLOWED_EXTENSIONS = {'pdf', 'docx'}
 
@@ -44,9 +37,7 @@ def grab_tokens(code):
     response = requests.post(token_url, data=payload)
     response_json = response.json()
 
-    access_token = response_json.get('access_token')
-    
-    return access_token
+    return response_json
 
 # grab user info from token
 def get_user_info(token):
@@ -69,27 +60,30 @@ def get_user_info(token):
             print(f"Failed to fetch profile: {response.status_code} - {response.text}")
             return None
 
-token = None
-    
+access_token = None
 # POST: login in user.
 @app.route('/api/login', methods=["POST"])
 def handleCode():
     if 'code' not in request.json:
         return jsonify({'error': 'no code found'}, 400)
-        
+
     code = request.json['code']
-    global token
-    token = grab_tokens(code)
+    tokens = grab_tokens(code)
+    global access_token
+    access_token = tokens['access_token']
+    id_token = tokens['id_token']
         
-    return token
+    return id_token
 
 # GET: profile info.
 @app.route('/api/profile', methods=["GET"])
+@require_authorization_header
 def GetProfileInfo():
-    return get_user_info(token)
+    return get_user_info(access_token)
 
 # POST: upload file to get course data to populate form.
 @app.route('/api/uploadFile', methods=["POST"])
+@require_authorization_header
 def handleFileUpload():
     if 'file' not in request.files:
         return jsonify({'error': 'No file selected'}, 400)
@@ -108,6 +102,7 @@ def handleFileUpload():
 
 # POST: updated form values up load to google calendar.
 @app.route('/api/createEvents', methods=["POST"])
+@require_authorization_header
 def create_event():
     
     if 'course_data' not in request.json:
@@ -115,12 +110,17 @@ def create_event():
     course_data = request.json["course_data"]
     year = request.json["year"]
     
-    result = create_calendar_events(course_data, token, year)
+    result = create_calendar_events(course_data, access_token, year)
     
     if result is not None:
         return jsonify({'Success': "Calendar updated"}, 200)
     else:
         return jsonify({'error': 'Error!'}, 400)    
+    
+@app.route('/api/test', methods=["GET"])
+@require_authorization_header
+def test():
+    return jsonify({'message': 'hi'}, 200)
     
 if __name__ == '__main__':
     app.run(debug=True)
