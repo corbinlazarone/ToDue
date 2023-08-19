@@ -12,7 +12,7 @@ import Profile from "./Profile";
 // handles google sign in.
 export default function Oauth() {
   const [disabled, setDisabled] = useState(false);
-  const [accessToken, setAccessToken] = useState(null);
+  const [token, setToken] = useState(null);
   const [signedIn, setSignedIn] = useState(true);
   const [profileSignIn, setProfileSignIn] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
@@ -34,27 +34,18 @@ export default function Oauth() {
           },
         }
       );
+      const token = await response.data;
+      console.log(token);
+      setToken(token);
+      grabProfileInfo(token);
+      messageAPI.open({
+        type: "success",
+        content: "Sign in Successful! 🚀",
+      });
 
-      if (response.status == 200) {
-        const token = await response.data;
-        console.log(token);
-        setAccessToken(token);
-        grabProfileInfo();
-        messageAPI.open({
-          type: "success",
-          content: "Sign in Successful! 🚀",
-        });
-
-        setDisabled(true);
-        setSignedIn(false);
-        setProfileSignIn(true);
-      } else {
-        messageAPI.open({
-          type: "error",
-          content: "Error! Try Signing in again",
-        });
-      }
-      
+      setDisabled(true);
+      setSignedIn(false);
+      setProfileSignIn(true);
     } catch (error) {
       console.error(`Error sending code to backend: ${error}`);
       setSignedIn(true);
@@ -66,19 +57,18 @@ export default function Oauth() {
    * grab user profile information from google people api.
    * @param {string} token Bearer token for authorization.
    */
-  const grabProfileInfo = async () => {
+  const grabProfileInfo = async (tokenfunc) => {
     try {
       const response = await axios.get("http://127.0.0.1:5000/api/profile", {
         headers: {
-          Authorization: `Bearer ${accessToken}`,
+          Authorization: "Bearer " + tokenfunc,
         },
       });
       const repData = await response.data;
 
       // Grabbing profile info
-      const photoArray = repData.photo;
-      console.log(repData);
-      const photoUrl = photoArray.map((photo) => photo.url);
+      const photoUrl = repData.photos[0].url;
+      console.log(photoUrl);
       setPhotoUrl(photoUrl);
     } catch (error) {
       console.error(error);
@@ -108,14 +98,14 @@ export default function Oauth() {
 
   return (
     <>
-      {profileSignIn ? <Profile /> : <h1>To Due</h1>}
+      {profileSignIn ? <Profile photo={photoUrl} /> : <h1>To Due</h1>}
       <div>
         {contextHolder}
         <div className={styles.fileInput}>
           {signedIn && <GoogleLoginButton onClick={() => login()} />}
         </div>
       </div>
-      <FileInput disabled={disabled} accessToken={accessToken} />
+      <FileInput disabled={disabled} accessToken={token} />
     </>
   );
 }

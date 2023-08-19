@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <GoogleOAuthProvider clientId={"125984775541-023rp3fhq6n6gvngqp9ortsf58rsl5uu.apps.googleusercontent.com"}>
+      <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_CLIENT_ID}>
         <body className={inter.className}>{children}</body>
       </GoogleOAuthProvider>
     </html>

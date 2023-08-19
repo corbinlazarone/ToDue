@@ -138,28 +138,31 @@ def get_due_dates(syllabus_data):
         
     """
     
-    OPENAI_API_KEY = "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"
-    
+    with open("config.json") as config_file:
+        config = json.load(config_file)
+        OPENAI_API_KEY = config['OPENAI_API_KEY']
+
     openai.api_key = OPENAI_API_KEY
-    response = openai.Completion.create(
-        model='text-davinci-003',
-         prompt = '"Please provide course exams in this format: {\"course_name\": \"Course_Name\", \"assignments\": [{\"name\": \"name\", \"due_date\": \"dueDate\", \"start_time\": \"startTime\", \"end_time\": \"endTime\"}]} You can enter multiple course details in the same format." From the data ' + syllabus_data + ". Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION.",
-         max_tokens = 1200,
-         n=1,
-         stop=None,
-         temperature = 0,
+    prompt = (
+        'Please provide course exams in this format: '
+        '{"course_name": "Course_Name", "assignments": [{"name": "name", "due_date": "dueDate", "start_time": "startTime", "end_time": "endTime"}]} '
+        'You can enter multiple course details in the same format." From the data ' + syllabus_data + '. '
+        'Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION.'
+    )    
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that provides course exam information."},
+            {"role": "user", "content": prompt}
+        ]
     )
-    
-    rep = response.choices[0].text.strip()
-    
-    start_pos = rep.index('{') # get response where { starts.
-    course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
-    dictionary_str = rep[start_pos:]
-    data = json.loads(dictionary_str)
-    
-    
-    if set(data.keys()) == set(course_data.keys()):
+
+    rep = response.choices[0].message["content"].strip()
+    try:
+        data = json.loads(rep)
+        print(data)
         return data
-    else:
-        return correct_keys(data)
+    except json.JSONDecodeError as e:
+        print("JSON decoding error:", e)
+        return None
     

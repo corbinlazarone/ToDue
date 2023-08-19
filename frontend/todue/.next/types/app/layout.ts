@@ -1,4 +1,4 @@
-// File: /mnt/c/Users/corbi/Documents/ToDue/frontend/todue/src/app/layout.js
+// File: /Users/corbinlazarone/Desktop/ToDue/frontend/todue/src/app/layout.js
 import * as entry from '../../../src/app/layout.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
