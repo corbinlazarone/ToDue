@@ -16,7 +16,6 @@
     width: 100%;
     max-width: 900px;
     padding: 40px;
-    border: 1px solid white;
 }
 
 .paragraph {
@@ -27,7 +26,8 @@
     margin-right: auto;
 }
 
-/* components/StepFlow.module.css */
+/* step flow styling */
+
 .stepFlow {
     display: flex;
     align-items: center;
