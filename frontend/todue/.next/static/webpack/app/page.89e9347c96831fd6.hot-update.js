@@ -1,0 +1,21 @@
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+self["webpackHotUpdate_N_E"]("app/page",{
+
+/***/ "(app-client)/./src/app/styles/home.module.css":
+/*!****************************************!*\
+  !*** ./src/app/styles/home.module.css ***!
+  \****************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+eval(__webpack_require__.ts("// extracted by mini-css-extract-plugin\nmodule.exports = {\"layout\":\"home_layout__Rbs4e\",\"fade\":\"home_fade__8Z87_\",\"headerStyle\":\"home_headerStyle__kZ0an\",\"content\":\"home_content__MUgbz\",\"pages\":\"home_pages__zP01P\",\"pageLink\":\"home_pageLink__arMxq\",\"title\":\"home_title__jhZo4\",\"aboutSection1\":\"home_aboutSection1___WvZo\",\"footer\":\"home_footer__sV1_i\",\"footerContent\":\"home_footerContent__vRl0v\",\"footer-content\":\"home_footer-content__lH71I\",\"socialMedia\":\"home_socialMedia__GfAyK\",\"instagram\":\"home_instagram__CLp0r\",\"twitter\":\"home_twitter__W8nrj\",\"facebook\":\"home_facebook__7lshE\"};\n    if(true) {\n      // 1692563378585\n      var cssReload = __webpack_require__(/*! ./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js */ \"(app-client)/./node_modules/next/dist/compiled/mini-css-extract-plugin/hmr/hotModuleReplacement.js\")(module.id, {\"publicPath\":\"/_next/\",\"esModule\":false,\"locals\":true});\n      module.hot.dispose(cssReload);\n      \n    }\n  \nmodule.exports.__checksum = \"240e955cadde\"\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiKGFwcC1jbGllbnQpLy4vc3JjL2FwcC9zdHlsZXMvaG9tZS5tb2R1bGUuY3NzIiwibWFwcGluZ3MiOiJBQUFBO0FBQ0Esa0JBQWtCO0FBQ2xCLE9BQU8sSUFBVTtBQUNqQjtBQUNBLHNCQUFzQixtQkFBTyxDQUFDLGlNQUF3SSxjQUFjLHNEQUFzRDtBQUMxTyxNQUFNLFVBQVU7QUFDaEI7QUFDQTtBQUNBO0FBQ0EseUJBQXlCIiwic291cmNlcyI6WyJ3ZWJwYWNrOi8vX05fRS8uL3NyYy9hcHAvc3R5bGVzL2hvbWUubW9kdWxlLmNzcz8wNDY2Il0sInNvdXJjZXNDb250ZW50IjpbIi8vIGV4dHJhY3RlZCBieSBtaW5pLWNzcy1leHRyYWN0LXBsdWdpblxubW9kdWxlLmV4cG9ydHMgPSB7XCJsYXlvdXRcIjpcImhvbWVfbGF5b3V0X19SYnM0ZVwiLFwiZmFkZVwiOlwiaG9tZV9mYWRlX184Wjg3X1wiLFwiaGVhZGVyU3R5bGVcIjpcImhvbWVfaGVhZGVyU3R5bGVfX2taMGFuXCIsXCJjb250ZW50XCI6XCJob21lX2NvbnRlbnRfX01VZ2J6XCIsXCJwYWdlc1wiOlwiaG9tZV9wYWdlc19felAwMVBcIixcInBhZ2VMaW5rXCI6XCJob21lX3BhZ2VMaW5rX19hck14cVwiLFwidGl0bGVcIjpcImhvbWVfdGl0bGVfX2poWm80XCIsXCJhYm91dFNlY3Rpb24xXCI6XCJob21lX2Fib3V0U2VjdGlvbjFfX19XdlpvXCIsXCJmb290ZXJcIjpcImhvbWVfZm9vdGVyX19zVjFfaVwiLFwiZm9vdGVyQ29udGVudFwiOlwiaG9tZV9mb290ZXJDb250ZW50X192UmwwdlwiLFwiZm9vdGVyLWNvbnRlbnRcIjpcImhvbWVfZm9vdGVyLWNvbnRlbnRfX2xINzFJXCIsXCJzb2NpYWxNZWRpYVwiOlwiaG9tZV9zb2NpYWxNZWRpYV9fR2ZBeUtcIixcImluc3RhZ3JhbVwiOlwiaG9tZV9pbnN0YWdyYW1fX0NMcDByXCIsXCJ0d2l0dGVyXCI6XCJob21lX3R3aXR0ZXJfX1c4bnJqXCIsXCJmYWNlYm9va1wiOlwiaG9tZV9mYWNlYm9va19fN2xzaEVcIn07XG4gICAgaWYobW9kdWxlLmhvdCkge1xuICAgICAgLy8gMTY5MjU2MzM3ODU4NVxuICAgICAgdmFyIGNzc1JlbG9hZCA9IHJlcXVpcmUoXCIvVXNlcnMvY29yYmlubGF6YXJvbmUvRGVza3RvcC9Ub0R1ZS9mcm9udGVuZC90b2R1ZS9ub2RlX21vZHVsZXMvbmV4dC9kaXN0L2NvbXBpbGVkL21pbmktY3NzLWV4dHJhY3QtcGx1Z2luL2htci9ob3RNb2R1bGVSZXBsYWNlbWVudC5qc1wiKShtb2R1bGUuaWQsIHtcInB1YmxpY1BhdGhcIjpcIi9fbmV4dC9cIixcImVzTW9kdWxlXCI6ZmFsc2UsXCJsb2NhbHNcIjp0cnVlfSk7XG4gICAgICBtb2R1bGUuaG90LmRpc3Bvc2UoY3NzUmVsb2FkKTtcbiAgICAgIFxuICAgIH1cbiAgXG5tb2R1bGUuZXhwb3J0cy5fX2NoZWNrc3VtID0gXCIyNDBlOTU1Y2FkZGVcIlxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///(app-client)/./src/app/styles/home.module.css\n"));
+
+/***/ })
+
+});

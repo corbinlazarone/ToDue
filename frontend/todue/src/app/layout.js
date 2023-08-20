@@ -1,5 +1,5 @@
 'use client'
-import './css/globals.css'
+import './styles/globals.css'
 import { Inter } from 'next/font/google'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 

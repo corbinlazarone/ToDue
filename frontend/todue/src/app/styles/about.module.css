@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700&display=swap');
+
+.sectionHeader {
+    color: lightgray;
+    font-size: 48px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    font-family: 'Syne', sans-serif;
+}
+
+.mainDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 900px;
+    padding: 40px;
+}
+
+.paragraph {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    padding: 10px 0;
+    max-width: 70%; 
+}
+
+/* step flow styling */
+
+.stepFlow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    margin: 50px;
+  }
+  
+  .card {
+    width: 300px;
+    margin: 0 20px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+  
+  .card.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .arrow {
+    font-size: 24px;
+    margin: 10px 20px;
+    opacity: 0;
+    transform: translateY(-50px);
+    transition: opacity 0.5s, transform 0.5s;
+  }
+
+  .arrow.animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    /* Apply column layout for screens with a maximum width of 768px (typical mobile devices) */
+    .stepFlow {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 768px) {
+    /* Apply rotation to arrow span for screens with a maximum width of 768px (typical mobile devices) */
+    .arrow span {
+      transform: rotate(90deg);
+      margin: 10px 0;
+      display: inline-block;
+      transition: transform 0.3s ease-in-out;
+    }
+}
+  
+
