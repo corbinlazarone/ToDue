@@ -6,6 +6,7 @@
 .about_sectionHeader__QQElk {
     color: lightgray;
     font-size: 48px;
+    text-align: center;
     font-weight: bold;
     padding-bottom: 20px;
     font-family: 'Syne', sans-serif;
@@ -50,6 +51,10 @@
   .about_card__XbbYL.about_animate__7khrU {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .about_card__XbbYL:hover {
+    transform: scale(1.2);
   }
   
   .about_arrow___j__R {
@@ -197,6 +202,7 @@
   }
 
   .home_pageLink__arMxq {
+    font-size: 12px;
     margin-bottom: 10px;
   }
 }

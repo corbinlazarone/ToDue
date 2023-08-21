@@ -53,7 +53,7 @@ export default function Landing() {
             <Link href="#section3">Contact</Link>
           </p>
           <p style={{ paddingRight: 20 }} className={styles.pageLink}>
-            <Link href="pages/login">Log In</Link>
+            <Link href="pages/login">Login</Link>
           </p>
         </div>
       </Header>

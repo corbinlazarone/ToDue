@@ -3,6 +3,7 @@
 .sectionHeader {
     color: lightgray;
     font-size: 48px;
+    text-align: center;
     font-weight: bold;
     padding-bottom: 20px;
     font-family: 'Syne', sans-serif;
@@ -47,6 +48,10 @@
   .card.animate {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .card:hover {
+    transform: scale(1.2);
   }
   
   .arrow {

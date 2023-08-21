@@ -55,25 +55,29 @@ export default function About() {
       </div>
       <div className={styles.stepFlow}>
         <Card
-          title="Sign Up 🚀 !"
+          title="Sign Up"
           className={`${styles.card} ${scrollTriggered ? styles.animate : ""}`}
         >
           <UserAddOutlined style={{ fontSize: 48 }} />
         </Card>
-        <div className={`${styles.arrow} ${scrollTriggered ? styles.animate : ""}`}>
+        <div
+          className={`${styles.arrow} ${scrollTriggered ? styles.animate : ""}`}
+        >
           <span>&#8594;</span>
         </div>
         <Card
-          title="Upload 💻 !"
+          title="Upload"
           className={`${styles.card} ${scrollTriggered ? styles.animate : ""}`}
         >
           <UploadOutlined style={{ fontSize: 48 }} />
         </Card>
-        <div className={`${styles.arrow} ${scrollTriggered ? styles.animate : ""}`}>
+        <div
+          className={`${styles.arrow} ${scrollTriggered ? styles.animate : ""}`}
+        >
           <span>&#8594;</span>
         </div>
         <Card
-          title="Get To Dueing 📚 !"
+          title="Get To Dueing"
           className={`${styles.card} ${scrollTriggered ? styles.animate : ""}`}
         >
           <EditOutlined style={{ fontSize: 48 }} />

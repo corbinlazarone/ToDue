@@ -12,7 +12,7 @@ export default function FAQ() {
     {
       key: '2',
       label:
-        "Can we edit what will go into our calendar before To Due submits it?",
+        "Can I edit the suggested Events that To Due produces?",
       children:
         "Absolutely! Once you upload your syllabus, you'll be able to review and modify the information before To Due finalizes the submission. We want to make sure everything aligns perfectly with your preferences.",
     },
