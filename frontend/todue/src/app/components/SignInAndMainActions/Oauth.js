@@ -63,11 +63,10 @@ export default function Oauth() {
         headers: {
           Authorization: "Bearer " + tokenfunc,
         },
-      });
+      });;
       const repData = await response.data;
-
       // Grabbing profile info
-      const photoUrl = repData.photos[0].url;
+      const photoUrl = repData[0].result.photos[0].url;
       console.log(photoUrl);
       setPhotoUrl(photoUrl);
     } catch (error) {

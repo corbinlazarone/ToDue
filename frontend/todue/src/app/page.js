@@ -10,11 +10,11 @@ import {
 } from "@ant-design/icons";
 import About from "./components/LandingPage/About";
 import FAQ from "./components/LandingPage/FAQ";
+import Contact from "./components/LandingPage/Contact";
 
 const { Header, Content, Footer } = Layout;
 
 export default function Landing() {
-
   useEffect(() => {
     // Smooth scrolling behavior
     const smoothScroll = (target) => {
@@ -64,6 +64,9 @@ export default function Landing() {
         <section id="section2" className={styles.faqSectionTwo}>
           <FAQ />
         </section>
+        <section id="section3">
+          <Contact />
+        </section>
       </Content>
       <Footer className={styles.footer}>
         <div className={styles.footerContent}>
@@ -84,7 +87,10 @@ export default function Landing() {
               </a>
             </li>
           </ul>
-          <p>&copy; {new Date().getFullYear()} To Due. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} Corbin Lazarone. All rights
+            reserved.
+          </p>
         </div>
       </Footer>
     </Layout>

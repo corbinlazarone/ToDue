@@ -1,66 +1,12 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from script import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
-from middleware import require_authorization_header
-import requests
-import json
+from syllabusExtract import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
+from middleware import require_authorization_header, grab_tokens, get_user_info, allowed_files, send_email_from_user
 
-app = Flask("ToDue")
+app = Flask("To Due")
 CORS(app)
+access_token = None # global access token
 
-ALLOWED_EXTENSIONS = {'pdf', 'docx'}
-
-# check file extension.
-def allowed_files(file_name):
-    return '.' in file_name and file_name.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-# Defining oauth client to get tokens.
-def grab_tokens(code):
-    
-    with open("config.json") as config_file:
-        config = json.load(config_file)
-        CLIENT_ID = config['CLIENT_ID']
-        CLIENT_SECRET = config['CLIENT_SECRET']
-        
-    token_url = "https://accounts.google.com/o/oauth2/token"
-    client_id = CLIENT_ID
-    client_secret = CLIENT_SECRET
-
-    payload = {
-        "code": code,
-        "client_id": client_id,
-        "client_secret": client_secret,
-        "redirect_uri": "http://localhost:3000",
-        "grant_type": "authorization_code",
-    }
-
-    response = requests.post(token_url, data=payload)
-    response_json = response.json()
-
-    return response_json
-
-# grab user info from token
-def get_user_info(token):
-        headers = {
-            'Authorization': f'Bearer {token}',
-            'Accept': 'application/json',
-        }
-
-        params = {
-            'personFields': 'names,emailAddresses,photos',
-        }
-
-        url = 'https://people.googleapis.com/v1/people/me'
-        response = requests.get(url, headers=headers, params=params)
-
-        if response.status_code == 200:
-            profile_data = response.json()
-            return profile_data
-        else:
-            print(f"Failed to fetch profile: {response.status_code} - {response.text}")
-            return None
-
-access_token = None
 # POST: login in user.
 @app.route('/api/login', methods=["POST"])
 def handleCode():
@@ -70,18 +16,30 @@ def handleCode():
     code = request.json['code']
     tokens = grab_tokens(code)
     global access_token
-    access_token = tokens['access_token']
-    id_token = tokens['id_token']
+    access_token = tokens.get('access_token')
+    id_token = tokens.get('id_token')
         
     return id_token
+
+# POST: Send Contact Message.
+@app.route('/api/send', methods=["POST"])
+def sendMessage():
+    if 'formItems' not in request.json:
+        return jsonify(message="No Items in request body."), 400
+    
+    items = request.json['formItems']
+    msg = send_email_from_user(items)
+
+    return jsonify(message=msg), 200
 
 # GET: profile info.
 @app.route('/api/profile', methods=["GET"])
 @require_authorization_header
 def GetProfileInfo():
-    return get_user_info(access_token)
+    profileData = get_user_info(access_token)
+    return jsonify({'result': profileData}, 200)
 
-# POST: upload file to get course data to populate form.
+# POST: upload file to get course data to populate form.d
 @app.route('/api/uploadFile', methods=["POST"])
 @require_authorization_header
 def handleFileUpload():
@@ -115,12 +73,7 @@ def create_event():
     if result is not None:
         return jsonify({'Success': "Calendar updated"}, 200)
     else:
-        return jsonify({'error': 'Error!'}, 400)    
-    
-@app.route('/api/test', methods=["GET"])
-@require_authorization_header
-def test():
-    return jsonify({'message': 'hi'}, 200)
+        return jsonify({'error': 'Error!'}, 400)
     
 if __name__ == '__main__':
     app.run(debug=True)
