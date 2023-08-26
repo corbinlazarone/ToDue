@@ -13,11 +13,12 @@ import axios from "axios";
 import { message } from "antd";
 const { Meta } = Card;
 
-// FileDisplay Component
-// Displays the form for editing values and submitting values.
-// Props:
-// - data: The Data obtained from the algorithm to fill form with syllabus due dates, times, etc.
-// - updateData: function to update original data sent from FileInput Component.
+/**
+ * FileDisplay Component - Displays the form for editing values and submitting new values.
+ * @param {object} props.data - data from api that populates form.
+ * @param props.updateData - function to update original data sent from FileInput Component.
+ * @returns {JSX} renders form component from antd.
+ */
 export default function FileDisplay(props) {
   const [counter, setCounter] = useState(0);
   const [beingEdited, setBeingEdited] = useState(false);
@@ -41,16 +42,12 @@ export default function FileDisplay(props) {
    * Making sure the pagination matches with the correct data by subtracting one from the current page.
    * @param {number} page The current page on the pagination.
    */
-  const handlePaginationChange = (page) => {
-    setCounter(page - 1);
-  };
+  const handlePaginationChange = (page) => { setCounter(page - 1); };
 
   /**
    * Makes the "Save" button appear if the user editing the form values.
    */
-  const isEditing = () => {
-    setBeingEdited(true);
-  };
+  const isEditing = () => { setBeingEdited(true); };
 
   /**
    * Handles submitting the form values, checking format and updating props.data correctly with new values
@@ -60,8 +57,7 @@ export default function FileDisplay(props) {
     const formData = await form.validateFields();
 
     // Check format of date and time.
-    const dateFormatRegex =
-      /^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday), (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}(st|nd|rd|th)$/;
+    const dateFormatRegex = /^\d{4}-(0[1-9]|1[0-2])-([0-2][1-9]|3[01])$/;
     const timeFormatRegex = /^(1[0-2]|0?[1-9]):[0-5][0-9] [APap][Mm]$/;
 
     if (!dateFormatRegex.test(formData.dueDate)) {
@@ -121,11 +117,13 @@ export default function FileDisplay(props) {
     setBeingEdited(false);
     setCheckStatus(true);
 
+    let nameCapitalized = name.charAt(0).toUpperCase() + name.slice(1);
+
     messageAPI.open({
       type: "loading",
-      content: "Adding Events to Corbins Google Calendar",
+      content: `Adding Events to ${nameCapitalized}'s google calendar!`,
       key: "loadingKey",
-    });
+    })
 
     try {
       const response = await axios.post(
@@ -189,19 +187,19 @@ export default function FileDisplay(props) {
             <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
           <Form.Item
-            label="Due Date (Must be in example format: Tuesday, February 6th)"
+            label="Due Date (Must be in example format: year-month-day)"
             name="dueDate"
           >
             <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
           <Form.Item
-            label="Start Time (Must be in example format: 8:30 am)"
+            label="Start Time (Must be in example format: 08:30AM)"
             name="startTime"
           >
             <Input disabled={checkStatus} onChange={isEditing} />
           </Form.Item>
           <Form.Item
-            label="End Time (Must be in example format: 8:30 am)"
+            label="End Time (Must be in example format: 08:30AM)"
             name="endTime"
           >
             <Input disabled={checkStatus} onChange={isEditing} />

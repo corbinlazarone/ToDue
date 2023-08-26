@@ -1,21 +1,24 @@
 "use client";
 import { useGoogleLogin } from "@react-oauth/google";
 import { GoogleLoginButton } from "react-social-login-buttons";
-import styles from "../../styles/fileInput.module.css";
-import FileInput from "./FileInput";
-import axios from "axios";
 import { useState } from "react";
 import { message } from "antd";
+import FileInput from "./FileInput";
+import axios from "axios"
 import Profile from "./Profile";
+import styles from "../../styles/fileInput.module.css";
 
-// Oauth Component.
-// handles google sign in.
+/**
+ * Oauth Component - renders google sign in prompt.
+ * @returns {JSX} Oauth google sign in button.
+ */
 export default function Oauth() {
   const [disabled, setDisabled] = useState(false);
   const [token, setToken] = useState(null);
   const [signedIn, setSignedIn] = useState(true);
   const [profileSignIn, setProfileSignIn] = useState(false);
   const [photoUrl, setPhotoUrl] = useState(null);
+  const [userName, setUserName] = useState(null)
   const [messageAPI, contextHolder] = message.useMessage();
 
   /**
@@ -34,10 +37,11 @@ export default function Oauth() {
           },
         }
       );
-      const token = await response.data;
-      console.log(token);
+      const repData = await response.data;
+      const token = repData[0].id_token;
       setToken(token);
       grabProfileInfo(token);
+
       messageAPI.open({
         type: "success",
         content: "Sign in Successful! 🚀",
@@ -65,9 +69,9 @@ export default function Oauth() {
         },
       });;
       const repData = await response.data;
-      // Grabbing profile info
       const photoUrl = repData[0].result.photos[0].url;
-      console.log(photoUrl);
+      const name = repData[0].result.names[0].givenName;
+      setUserName(name)
       setPhotoUrl(photoUrl);
     } catch (error) {
       console.error(error);
@@ -75,7 +79,7 @@ export default function Oauth() {
   };
 
   /**
-   * handles file upload failure logs error to console and returns user feed back.
+   * handles google auth failure, provides user feedback.
    * @param {JSON} error
    */
   const handleFailure = (error) => {
@@ -104,7 +108,7 @@ export default function Oauth() {
           {signedIn && <GoogleLoginButton onClick={() => login()} />}
         </div>
       </div>
-      <FileInput disabled={disabled} accessToken={token} />
+      <FileInput disabled={disabled} accessToken={token} userName={userName} />
     </>
   );
 }

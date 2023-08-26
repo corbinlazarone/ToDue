@@ -6,12 +6,6 @@ import requests
 import datetime
 import os
 
-# Constants
-# with open("config.json") as config_file:
-#     config = json.load(config_file)
-#     OPENAI_API_KEY = config['OPENAI_API_KEY']
-
-
 # Functions
 
 def extract_PDF(path):
@@ -111,7 +105,7 @@ def convert_dates_and_times(due_date, time, year):
         return "wrong format"
     else:
         # Convert date string to to datetime object.
-        date = datetime.datetime.strptime(due_date, "%A, %B %dth")
+        date = datetime.datetime.strptime(due_date, "%Y-%m-%d")
         
         # Getting hour and minute from time.
         time_string = datetime.datetime.strptime(time, "%I:%M %p").time()
@@ -152,7 +146,7 @@ def get_due_dates(syllabus_data):
     openai.api_key = OPENAI_API_KEY
     prompt = (
         'Please provide course exams in this format: '
-        '{"course_name": "Course_Name", "assignments": [{"name": "name", "due_date": "dueDate", "start_time": "startTime", "end_time": "endTime"}]} '
+        '{"course_name": "Course_Name", "assignments": [{"name": "name", "due_date": "year-month-day", "start_time": "08:30 AM", "end_time": "08:30 PM"}]} '
         'You can enter multiple course details in the same format." From the data ' + syllabus_data + '. '
         'Do not justify your answers. Do not give information not mentioned in the CONTEXT INFORMATION.'
     )    
@@ -161,11 +155,12 @@ def get_due_dates(syllabus_data):
         messages=[
             {"role": "system", "content": "You are a helpful assistant that provides course exam information."},
             {"role": "user", "content": prompt}
-        ]
+        ],
     )
 
     rep = response.choices[0].message["content"].strip()
     print(rep)
     data = json.loads(rep)
+    print(f"\n {data}")
     return data
     

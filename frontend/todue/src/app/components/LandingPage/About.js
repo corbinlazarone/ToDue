@@ -7,6 +7,10 @@ import {
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 
+/**
+ * About Component - renders about page on To Due Landing page.
+ * @returns {JSX} renders about section including text and card components from antd.
+ */
 export default function About() {
   const [scrollTriggered, setScrollTriggered] = useState(false);
 

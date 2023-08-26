@@ -8,12 +8,10 @@ import styles from "../../styles/fileInput.module.css";
 export default function FileInput(props) {
   const [data, setData] = useState(null);
   const [fileUploaded, setFileUploaded] = useState(false);
+  const [disabled, setDisabled] = useState(false)
   const [loading, setLoading] = useState(false);
 
   const onChange = (info) => {
-    
-    // setLoading(true)
-
     if (info.file.status === "done") {
       message.success(`${info.file.name} file uploaded successfully`);
       setFileUploaded(true);
@@ -37,7 +35,8 @@ export default function FileInput(props) {
   };
 
   const handleSubmit = async ({ file, onSuccess, onError }) => {
-    setLoading(true)
+    setLoading(true);
+    setDisabled(true)
     try {
       const formData = new FormData();
       formData.append("file", file);
@@ -53,12 +52,15 @@ export default function FileInput(props) {
         }
       );
 
-      setLoading(false); // Set loading to false after fetching data
-      const responseData = await response.data;
-      setData(responseData);
+      setLoading(false);
+      setDisabled(false)
+      const repData = await response.data;
+      const course_data = repData[0].course_data;
+      setData(course_data);
       onSuccess();
     } catch (error) {
-      setLoading(false); // Set loading to false in case of error
+      setLoading(false);
+      setDisabled(false)
       onError();
     }
   };
@@ -85,14 +87,13 @@ export default function FileInput(props) {
           data={data}
           updateData={updateData}
           accessToken={props.accessToken}
+          userName={props.userName}
         />
       );
     }
   };
 
-  const updateData = (newData) => {
-    setData(newData)
-  }
+  const updateData = (newData) => { setData(newData); };
 
   return (
     <>
@@ -100,12 +101,15 @@ export default function FileInput(props) {
         {props.disabled && (
           <Upload
             name="file"
+            disabled={disabled}
             showUploadList={false}
             customRequest={handleSubmit}
             onChange={onChange}
             beforeUpload={beforeUpload}
           >
-            <Button icon={<UploadOutlined />}>Upload File</Button>
+            <Button disabled={disabled} icon={<UploadOutlined />}>
+              Upload File
+            </Button>
           </Upload>
         )}
       </div>

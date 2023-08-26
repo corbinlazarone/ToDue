@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from syllabusExtract import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
 from middleware import require_authorization_header, grab_tokens, get_user_info, allowed_files, send_email_from_user
 
@@ -19,7 +19,7 @@ def handleCode():
     access_token = tokens.get('access_token')
     id_token = tokens.get('id_token')
         
-    return id_token
+    return jsonify({'id_token': id_token}, 200)
 
 # POST: Send Contact Message.
 @app.route('/api/send', methods=["POST"])
@@ -39,7 +39,7 @@ def GetProfileInfo():
     profileData = get_user_info(access_token)
     return jsonify({'result': profileData}, 200)
 
-# POST: upload file to get course data to populate form.d
+# POST: upload file to get course data to populate form
 @app.route('/api/uploadFile', methods=["POST"])
 @require_authorization_header
 def handleFileUpload():
@@ -50,11 +50,11 @@ def handleFileUpload():
     course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
     if file and allowed_files(file.filename):
         if file.filename.rsplit('.', 1)[1].lower() == 'pdf':
-            pdfCourseData = get_due_dates(extract_PDF(file))
-            return pdfCourseData
+            # pdfCourseData = get_due_dates(extract_PDF(file))
+            return jsonify({'course_data': course_data}, 200)
         elif file.filename.rsplit('.', 1)[1].lower() == 'docx':
-            docxCourseData = get_due_dates(extract_DOCX(file))
-            return docxCourseData
+            # docxCourseData = get_due_dates(extract_DOCX(file))
+            return jsonify({'course_data': course_data}, 200)
     else:
         return jsonify({'error': 'Invalid File Extension'}, 400)
 
@@ -68,7 +68,8 @@ def create_event():
     course_data = request.json["course_data"]
     year = request.json["year"]
     
-    result = create_calendar_events(course_data, access_token, year)
+    # result = create_calendar_events(course_data, access_token, year)
+    result = "successs"
     
     if result is not None:
         return jsonify({'Success': "Calendar updated"}, 200)

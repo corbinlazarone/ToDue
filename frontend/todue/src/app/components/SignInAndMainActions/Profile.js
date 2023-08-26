@@ -3,16 +3,12 @@ import { Avatar, Menu, Dropdown, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import styles from "../../styles/profile.module.css";
 
-// Profile Component
-// Displays user avatar.
-// Props:
-// - photo: user's google profile photo.
+/**
+ * Profile Component - Displays user avatar.
+ * @param {string} props.photo users google profile photo url 
+ * @returns {JSX} renders title and profile photo for main upload page.
+ */
 export default function Profile(props) {
-
-  const handleMenuClick = (e) => {
-    console.log("Clicked item:", e.key);
-  };
-
   return (
     <>
       <div className={styles.profile}>
