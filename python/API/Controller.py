@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 from syllabusExtract import get_due_dates, create_calendar_events, extract_DOCX, extract_PDF
 from middleware import require_authorization_header, grab_tokens, get_user_info, allowed_files, send_email_from_user
 
