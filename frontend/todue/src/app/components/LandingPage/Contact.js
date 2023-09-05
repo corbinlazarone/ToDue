@@ -66,6 +66,7 @@ export default function Contact() {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        padding: 20,
         paddingBottom: 100,
         paddingTop: 100,
       }}

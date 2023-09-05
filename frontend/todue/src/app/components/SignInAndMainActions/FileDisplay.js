@@ -22,7 +22,7 @@ const { Meta } = Card;
 export default function FileDisplay(props) {
   const [counter, setCounter] = useState(0);
   const [beingEdited, setBeingEdited] = useState(false);
-  const [year, setYear] = useState("");
+  const [year, setYear] = useState(null);
   const [yearSelected, setYearSelected] = useState(false);
   const [form] = Form.useForm();
   const [messageAPI, contextHolder] = message.useMessage();
@@ -169,8 +169,9 @@ export default function FileDisplay(props) {
         <h3>{props.data?.course_name}</h3>
         <DatePicker
           picker="year"
-          onChange={(year) => {
-            setYear(year);
+          onChange={(date, dateString) => {
+            console.log(Number(dateString))
+            // setYear(year);
             setYearSelected(true);
           }}
         />

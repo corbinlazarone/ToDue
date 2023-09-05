@@ -50,11 +50,11 @@ def handleFileUpload():
     course_data = {'course_name': 'Math 1550 Section 021', 'assignments': [{'name': 'Homework', 'due_date': 'Tuesday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 1', 'due_date': 'Monday, February 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 2', 'due_date': 'Monday, March 6th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 3', 'due_date': 'Thursday, March 30th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Exam 4', 'due_date': 'Tuesday, April 25th', 'start_time': '8:30 am', 'end_time': '9:20 am'}, {'name': 'Final Exam', 'due_date': 'Saturday, May 13th', 'start_time': '7:30 am', 'end_time': '9:30 am'}]}
     if file and allowed_files(file.filename):
         if file.filename.rsplit('.', 1)[1].lower() == 'pdf':
-            # pdfCourseData = get_due_dates(extract_PDF(file))
-            return jsonify({'course_data': course_data}, 200)
+            pdfCourseData = get_due_dates(extract_PDF(file))
+            return jsonify({'course_data': pdfCourseData}, 200)
         elif file.filename.rsplit('.', 1)[1].lower() == 'docx':
-            # docxCourseData = get_due_dates(extract_DOCX(file))
-            return jsonify({'course_data': course_data}, 200)
+            docxCourseData = get_due_dates(extract_DOCX(file))
+            return jsonify({'course_data': docxCourseData}, 200)
     else:
         return jsonify({'error': 'Invalid File Extension'}, 400)
 
@@ -67,9 +67,9 @@ def create_event():
         return jsonify({'error': 'no course data found'}, 400)
     course_data = request.json["course_data"]
     year = request.json["year"]
+    print(year)
     
-    # result = create_calendar_events(course_data, access_token, year)
-    result = "successs"
+    result = create_calendar_events(course_data, access_token, year)
     
     if result is not None:
         return jsonify({'Success': "Calendar updated"}, 200)
@@ -77,4 +77,4 @@ def create_event():
         return jsonify({'error': 'Error!'}, 400)
     
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5000)

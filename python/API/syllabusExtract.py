@@ -88,7 +88,7 @@ def create_calendar_events(course_data, token, year):
     return course_data
  
 
-def convert_dates_and_times(due_date, time, year):
+def convert_dates_and_times(due_date, time, yearNum):
     """
     Converts dates and times extracted from Syllabus to specfic google calendar date and time format.
 
@@ -112,7 +112,7 @@ def convert_dates_and_times(due_date, time, year):
         
         # Setting the desired year, time, in correct google calendar event format.
         date_time = datetime.datetime.combine(date, time_string)
-        date_time = date_time.replace(year=year)
+        date_time = date_time.replace(year=yearNum)
         
         return date_time.strftime("%Y-%m-%dT%H:%M:%S")
 
@@ -159,8 +159,12 @@ def get_due_dates(syllabus_data):
     )
 
     rep = response.choices[0].message["content"].strip()
-    print(rep)
-    data = json.loads(rep)
-    print(f"\n {data}")
-    return data
+
+    try:
+        data = json.loads(rep)
+        formattedData = json.dumps(data, indent=2)  # Print the JSON data with proper formatting
+        print(formattedData)
+        return formattedData 
+    except json.JSONDecodeError as e:
+        print("Error decoding JSON:", e)
     

@@ -26,9 +26,6 @@
 .content {
     background-image: linear-gradient(to right, #434343, #000);
     min-height: 100vh;
-    /* height: 300px; */
-    /* padding: 40px; */
-    /* background-color: white; */
 }
 
 .pages {
