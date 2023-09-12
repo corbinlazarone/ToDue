@@ -20,8 +20,8 @@ frontend/todue/node_modules
 *.pem
 
 # Ignore config files
-python/API/config.json
-python/API/__pycache__
+api/config.json
+api/__pycache__
 
 # debug
 npm-debug.log*
