@@ -7,7 +7,7 @@ app = Flask("To Due")
 CORS(app)
 access_token = None # global access token
 
-@app.route('/api/test')
+@app.route('/')
 def hello():
     return "Hello World!"
 
