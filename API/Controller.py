@@ -7,6 +7,10 @@ app = Flask("To Due")
 CORS(app)
 access_token = None # global access token
 
+@app.route('/api/test')
+def hello():
+    return "Hello World!"
+
 # POST: login in user.
 @app.route('/api/login', methods=["POST"])
 def handleCode():
