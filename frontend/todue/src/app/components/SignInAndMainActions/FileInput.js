@@ -16,7 +16,7 @@ export default function FileInput(props) {
       message.success(`${info.file.name} file uploaded successfully`);
       setFileUploaded(true);
     } else if (info.file.status === "error") {
-      message.error(`${info.file.name} file upload failed. Try again!`);
+      message.error(`We're asking too much of Openai. Please try again in a minute!`);
     }
   };
 
@@ -56,6 +56,7 @@ export default function FileInput(props) {
       setDisabled(false)
       const repData = await response.data;
       const course_data = repData[0].course_data;
+      console.log(course_data)
       setData(course_data);
       onSuccess();
     } catch (error) {

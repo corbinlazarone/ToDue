@@ -22,7 +22,7 @@ const { Meta } = Card;
 export default function FileDisplay(props) {
   const [counter, setCounter] = useState(0);
   const [beingEdited, setBeingEdited] = useState(false);
-  const [year, setYear] = useState(null);
+  const [year, setYear] = useState(0);
   const [yearSelected, setYearSelected] = useState(false);
   const [form] = Form.useForm();
   const [messageAPI, contextHolder] = message.useMessage();
@@ -30,6 +30,7 @@ export default function FileDisplay(props) {
 
   useEffect(() => {
     // set the form values based on props.data.
+    console.log("props.data in fileDisplay", props.data)
     form.setFieldsValue({
       dueDate: props.data?.assignments?.[counter]?.due_date,
       endTime: props.data?.assignments?.[counter]?.end_time,
@@ -171,7 +172,7 @@ export default function FileDisplay(props) {
           picker="year"
           onChange={(date, dateString) => {
             console.log(Number(dateString))
-            // setYear(year);
+            setYear(Number(dateString));
             setYearSelected(true);
           }}
         />
